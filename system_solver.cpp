@@ -116,11 +116,11 @@ int main(int argc, char** argv) {
         {
             variable_value_t[i]=0;
             // what is (bool)(a < b = 0)
-            if(min > variable_value_prev_t[i])
+            if( min > variable_value_prev_t[i])
             {
                 min = variable_value_prev_t[i];
             }
-            if(max < variable_value_prev_t[i])
+            if( max < variable_value_prev_t[i])
             {
                 max = variable_value_prev_t[i];
             }
@@ -128,10 +128,10 @@ int main(int argc, char** argv) {
         for(int i = 0; i < system_size ; i++)
         {
             //if this is the multiplication of vector and matrix, we should use the sum of products.
-            variable_value_t[i]= 0;
+            //variable_value_t[i]= 0;
             for(int j = 0; j<system_size ; j++)
             {
-                variable_value_t[i] += variable_value_prev_t[i]*value_matrix[i][j];
+                variable_value_t[i] += variable_value_prev_t[j]*value_matrix[i][j];
             }
             // does this line normalise ? isn't the division used to normalise ?
             variable_value_t[i]= (variable_value_t[i] - min) / (max-min);
