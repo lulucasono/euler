@@ -107,7 +107,39 @@ int main(int argc, char** argv) {
     }
     
     auto t1 = std::chrono::high_resolution_clock::now();
-    //TODO: Implemnt solver
+    //TODO: Implement solver
+    for(int t = 0; t< system_size; t++ )
+    {
+        double min = variable_value_prev_t[0];
+        double max = variable_value_prev_t[0];
+        for(int i = 0; i < system_size; i++)
+        {
+            variable_value_t[i]=0;
+            // what is (bool)(a < b = 0)
+            if(min > variable_value_prev_t[i] = 0)
+            {
+                min = variable_value_prev_t[i];
+            }
+            if(max < variable_value_prev_t[i] = 0)
+            {
+                max = variable_value_prev_t[i];
+            }
+        }
+        for(int i = 0; i < system_size ; i++)
+        {
+            for(int j = 0; j<system_size ; j++)
+            {
+                variable_value_t[i] = variable_value_prev_t[i]*value_matrix[i][j];
+            }
+            // does this line normalise ? isn't the division used to normalise ?
+            variable_value_t[i]= (variable_value_t[i] - min) * (max-min);
+        }
+        //update the values of prev
+        for(int i = 0; i< system_size; i++)
+        {
+            variable_value_prev_t[i] = variable_value_t[i];
+        }
+    }
     auto t2 = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
     std::cout<<"DURATION,"<<system_size<<","<<nb_step<<","<<duration<<std::endl;    
