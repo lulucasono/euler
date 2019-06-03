@@ -7,6 +7,7 @@
 #include <vector>
 #include <sstream>
 #include<chrono>
+#include <omp.h>
 
 std::vector<double> getNextLineAndSplitIntoTokens(std::istream& str)
 {
@@ -33,13 +34,16 @@ std::vector<double> getNextLineAndSplitIntoTokens(std::istream& str)
 int main(int argc, char** argv) {
     // Step 0 : Check command line and get arguments
     
-    if (argc < 4) {
-        printf("The correct command is %s fileName nbStep validationFile\n",argv[0]);
+    if (argc < 5) {
+        printf("The correct command is %s fileName nbStep validationFile nbCores\n",argv[0]);
         exit(-1);
     }
     // Number of timestep
     int nb_step = std::atoi(argv[2]);
-    
+
+    // Number of cores
+    int nb_cores = std::atoi(argv[4]);
+    omp_set_num_threads(nb_cores);
     
     // Filename of the file containing the data
     char *fileName = argv[1];
@@ -125,6 +129,7 @@ int main(int argc, char** argv) {
                 max = variable_value_prev_t[i];
             }
         }
+        #pragma omp parallel for
         for(int i = 0; i < system_size ; i++)
         {
             //if this is the multiplication of vector and matrix, we should use the sum of products.
