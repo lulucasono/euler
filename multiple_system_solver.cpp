@@ -122,6 +122,40 @@ int main(int argc, char** argv) {
     
     auto t1 = std::chrono::high_resolution_clock::now();
     //TODO: Implemnt solver
+    for(int s = 0; s < nb_system; s++) {
+        for (int t = 0; t < nb_step; t++) {
+            double min = systems[s].variable_value_prev_t[0];
+            double max = systems[s].variable_value_prev_t[0];
+            for (int i = 0; i < systems[s].system_size; i++) {
+                systems[s].variable_value_t[i] = 0;
+                // what is (bool)(a < b = 0)
+                if (min > systems[s].variable_value_prev_t[i]) {
+                    min = systems[s].variable_value_prev_t[i];
+                }
+                if (max < systems[s].variable_value_prev_t[i]) {
+                    max = systems[s].variable_value_prev_t[i];
+                }
+            }
+            for (int i = 0; i < systems[s].system_size; i++) {
+                //if this is the multiplication of vector and matrix, we should use the sum of products.
+                //variable_value_t[i]= 0;
+                for (int j = 0; j < systems[s].system_size; j++) {
+                    systems[s].variable_value_t[i] += systems[s].variable_value_prev_t[j] * systems[s].value_matrix[i][j];
+                }
+                // does this line normalise ? isn't the division used to normalise ?
+                systems[s].variable_value_t[i] = (systems[s].variable_value_t[i] - min) / (max - min);
+            }
+            //update the values of prev
+            for (int i = 0; i < systems[s].system_size; i++) {
+                systems[s].variable_value_prev_t[i] = systems[s].variable_value_t[i];
+            }
+#ifdef MAP
+            printf("step = %d\n",t);
+            printf("max = %e\n",max);
+            printf("min = %e\n",min);
+#endif
+        }
+    }
     auto t2 = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
     std::cout<<"DURATION,"<<nb_system<<","<<nb_step<<","<<duration<<std::endl;    
